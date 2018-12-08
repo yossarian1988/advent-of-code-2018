@@ -8,3 +8,10 @@
        (frequencies)
        (vals)
        (some #(= n %))))
+
+(let [x2 (map #(exactly-n? %1 2) input)
+      x3 (map #(exactly-n? %1 3) input)]
+  (*
+   (count (filter identity x2))
+   (count (filter identity x3))))
+;6448
