@@ -15,3 +15,39 @@
    (count (filter identity x2))
    (count (filter identity x3))))
 ;6448
+
+;; part 2: find all
+(defn hamming [s1 s2]
+  (count (filter true? (map (partial reduce not=) (map vector s1 s2)))))
+
+
+(def x ["abcde" "fghij" "klmno" "pqrst" "fguij" "axcye" "wvxyz"])
+
+;; this is probably terrible
+(defn hamming-map [coll]
+  "create a map from a collection where the key is two ids, and the value is the hamming score"
+  (let [m {}]
+    (flatten (for [i coll]
+               (for [j coll]
+                 (assoc m :k [i j] :v (hamming i j)))))))
+
+
+(defn smallest-hamming [coll]
+  "finds the keys from the collection with smallest hamming score. this is probably inefficient and borderline dum dum"
+  (apply min-key :v
+         (->> (hamming-map coll)
+              (filter #(> (:v %) 0)))))
+
+(defn common-letters [coll]
+  "finds the common letters from the correct boxes (smallest hamming score)"
+  (let [sh (smallest-hamming coll)
+        s1 (first (:k sh))
+        s2 (second (:k sh))
+        v (:v sh)]
+    (if (= 1 v)
+      (filter (into #{} s1) s2)
+      (throw (Exception. "smallest value isn't 1")))))
+
+(common-letters input)
+
+
